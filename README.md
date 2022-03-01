@@ -4,6 +4,8 @@ available to the public. If you have any problem or suggestion on the design ple
 
 Please see MIT LICENCE for further information.
 
+The STL file, is part of the design of Ian Roxborough available on Thingiverse https://www.thingiverse.com/thing:4583051
+
 ## Hull
 
 ### MaxiMOOP
