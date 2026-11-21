@@ -11,4 +11,4 @@ The STL file, is part of the design of Ian Roxborough available on Thingiverse h
 ### MaxiMOOP
 
 [MaxiMOOP](https://www.sailbot.org/maximoop/) is a joint design effort between Prof. Paul Miller from U.S Naval Academy and Aberystwyth University specifically for autonomous sailing.
-You can find a preview of the model [here](hull/maximoopv3.STL) or download the orignal CAD file [here](hull/). 
+You can find a preview of the model [here](original-designs/maximoopv3.STL) or download the orignal CAD file [here](original-designs/). 
