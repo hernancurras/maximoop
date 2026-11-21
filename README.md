@@ -19,6 +19,7 @@ You can find a preview of the model [here](original-designs/maximoopv3.STL) or d
 |---|---|
 | [`original-designs/`](original-designs/) | Original CAD files of the MaxiMOOP hull, as received (not modified). |
 | [`plans/`](plans/) | Lines plan, table of offsets and 1:1 building templates for MaxiMOOP V3, derived from [`maximoopv3-2.igs`](original-designs/maximoopv3-2.igs). |
+| [`papers/`](papers/) | Reference papers. [`irsc2014-maximoop.pdf`](papers/irsc2014-maximoop.pdf) is the MaxiMOOP paper [1]. |
 
 ## Geometry inventory of `original-designs/`
 
@@ -101,7 +102,7 @@ Building conventions used in the templates:
 - **Printing:** print the PDFs at 100 % ("actual size") and check the 100 mm scale bar on every template.
 
 ## References
-1. P. Miller, M. Hamlet, C. Sauzé, M. Neal, D. Capper, D. Clark, A. Iles, L. Taylor, "MaxiMOOP: A Multi-Role, Low Cost and Small Sailing Robot Platform", in *Robotic Sailing 2014: Proceedings of the 7th International Robotic Sailing Conference* (IRSC 2014), Galway, Ireland, 2014.
+1. P. Miller, M. Hamlet, C. Sauzé, M. Neal, D. Capper, D. Clark, A. Iles, L. Taylor, "MaxiMOOP: A Multi-Role, Low Cost and Small Sailing Robot Platform", in *Robotic Sailing 2014: Proceedings of the 7th International Robotic Sailing Conference* (IRSC 2014), Galway, Ireland, 2014. Local copy: [`papers/irsc2014-maximoop.pdf`](papers/irsc2014-maximoop.pdf). Source: https://www.sailbot.org/wp-content/uploads/2017/06/irsc2014-maximoop.pdf
 2. MaxiMOOP at SailBot: https://www.sailbot.org/maximoop/
 3. I. Roxborough, MaxiMOOP V3 STL, Thingiverse: https://www.thingiverse.com/thing:4583051
 4. Tools used for the measurements and plans: [gmsh](https://gmsh.info), [trimesh](https://trimesh.org), [shapely](https://shapely.readthedocs.io), [rhino3dm](https://github.com/mcneel/rhino3dm), [ezdxf](https://ezdxf.mozman.at).
