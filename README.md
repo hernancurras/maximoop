@@ -22,7 +22,7 @@ You can find a preview of the model [here](original-designs/maximoopv3.STL) or d
 | [`original-designs/`](original-designs/) | Original CAD files of the MaxiMOOP hull, as received (not modified). |
 | [`plans/`](plans/) | Lines plan, table of offsets and 1:1 building templates for MaxiMOOP V3, derived from [`maximoopv3-2.igs`](original-designs/maximoopv3-2.igs). |
 | [`papers/`](papers/) | Reference papers. [`irsc2014-maximoop.pdf`](papers/irsc2014-maximoop.pdf) is the MaxiMOOP paper [1]. |
-| [`diagrams/`](diagrams/) | Electrical diagrams. [`Dewi_wiring_diagram.pdf`](diagrams/Dewi_wiring_diagram.pdf) is the reference wiring of Dewi (Aberystwyth University). |
+| [`diagrams/`](diagrams/) | Electrical diagrams: the MaxiMOOP V3.2 (2026) electrical architecture ([`.drawio`](diagrams/MaxiMOOP_V3.2_2026_electrical.drawio), [`.pdf`](diagrams/MaxiMOOP_V3.2_2026_electrical.pdf)) and the Dewi reference wiring ([`Dewi_wiring_diagram.pdf`](diagrams/Dewi_wiring_diagram.pdf)). |
 
 ## Geometry inventory of `original-designs/`
 
@@ -128,6 +128,62 @@ Building conventions used in the templates:
 - **Bulkhead placement:** B1–B6 with the aft face on the station line, B7–B11 with the forward face on the station line, so the bevel always removes material.
 - **Fin keel:** B4–B8 include the fin section. The fin root is dashed; cut there to build the fin as a separate piece.
 - **Printing:** print the PDFs at 100 % ("actual size") and check the 100 mm scale bar on every template.
+
+## Electrical architecture: MaxiMOOP V3.2 (2026)
+
+The electrical design of MaxiMOOP V3.2 is documented as seven figures.
+
+| File | Use |
+|---|---|
+| [`diagrams/MaxiMOOP_V3.2_2026_electrical.drawio`](diagrams/MaxiMOOP_V3.2_2026_electrical.drawio) | Editable source. Open it in [draw.io / diagrams.net](https://app.diagrams.net); one tab per figure. |
+| [`diagrams/MaxiMOOP_V3.2_2026_electrical.pdf`](diagrams/MaxiMOOP_V3.2_2026_electrical.pdf) | Read-only copy of the same seven figures. |
+
+The Dewi reference wiring is kept separately; see the next section.
+
+### Figures
+| Fig. | Tab | Content |
+|---|---|---|
+| 1 | References | Legend of component types and link types, plus the generic control loop: `loop()` → CPU → actuator output → sensor feedback → `loop()`. |
+| 2 | Main Autopilot | System overview in three tiers. **Main computer:** Raspberry Pi 3B+ (Linux / ROS), with WiFi (TP-Link WR802N, Ethernet), Iridium RockBLOCK 9603, LoRa telemetry, RFD900 telemetry, status LEDs and a secondary GPS (ND-100, USB). **IMU hub:** Arduino MEGA, with the master GPS (u-blox NEO-M8P/M8N, UART), quaternion compass system (UART), IMU 9-DOF (I²C), environment-sensor MCU (UART), wind vane direction (AS5043/AS5060), nav lights and IMU status LED. **Control pod:** Arduino Nano, which takes the RC receiver (Ch1 rudder, Ch2 sail winch, Ch3 mode) and drives the rudder and the sail winch. |
+| 3 | Nav Lights | ATtiny85 controller. Inputs: a light sensor and a status signal. Outputs: NeoPixel left/right/front, a status LED panel and a strobe (left-right-front-mast). |
+| 4 | PSU | Battery "LiPo 4C 14.4–16.8 V" (8 × 18650 cells), buck converters 12 V @ 10 A, 5 V @ 1 A and 3.3 V @ 1 A, power switch, BMS and solar charging panels. Voltage (0–5 V) and current (0–15 A) are measured for the environment sensors. |
+| 5 | Env Sensors | Arduino Nano refreshed at 20 Hz. Temperature ×4 (interior / exterior), voltage ×4 (cells LIPO1–4), current (ACS712, PSU), rudder and boom angle (AS5060 ×2) and barometer (BMP180, I²C; BME280 noted as an alternative). |
+| 6 | Deprecated-SmartServo | Earlier actuator board, **no longer used**, kept for reference. Arduino Nano with an L298N H-bridge driving the sail-winch gearbox (10-turn feedback pot, end switches), rudder servo, OLED SH1106 and 5 V @ 3 A buck. |
+| 7 | Ground Station | Arduino Nano with RFD900 telemetry and an antenna LED, LoRa telemetry on USB, a PC and a WiFi link. |
+
+### Drawing conventions
+- **Box colour = component type** (legend in Fig. 1):
+
+  | Colour | Type |
+  |---|---|
+  | Red | Analog sensor |
+  | Violet | Digital / I²C / UART sensor |
+  | Blue | CPU / MCU |
+  | Green | Actuator / output |
+  | Orange | Power |
+  | Yellow | Complex isolated subsystem |
+  | Grey | Comms / auxiliary / data item |
+
+- **Line style = link type:**
+
+  | Line | Link |
+  |---|---|
+  | Solid, filled arrow | Data / signal (the label gives the interface, e.g. UART, I²C, USB, RC, Ethernet) |
+  | Long dashes | Power |
+  | Dotted | Temporary connection |
+  | Round ends | Measurement tap |
+
+  Arrows show the direction of data or command flow. Where two lines cross without connecting, one is drawn with a gap.
+- **Style:** inspired by 1960s NASA block diagrams (e.g. the Apollo Guidance Computer): black outlines, upper-case lettering, square boxes, dashed group frames.
+- **Font:** [Nasalization](https://typodermicfonts.com/?p=2898) (Typodermic, free). Install it locally for the intended look; without it draw.io falls back to Helvetica. The PDF was rendered with a fallback sans-serif font.
+
+### Open points noted on the diagrams
+These items are drawn as they currently stand in the design and are still to be decided:
+- **Not yet connected:** the wind speed sensor (Modern Device Rev P), the MPU-9250 and the status LED panel.
+- **Interface not specified:** the link from the Pi to the RockBLOCK.
+- **LoRa band:** the boat is drawn as 868–915 MHz and the ground station as 868 MHz. In Argentina the 915 MHz band (902–928 MHz) applies.
+- **Nav lights note 1:** the light codes (GPS fixed, error, auto, nav mode) are still to be defined.
+- **Fig. 6:** the "Vcc +12 V" line to the H-bridge leaves the 5 V buck converter. This was kept as in the original drawing.
 
 ## Electrical reference: Dewi (Aberystwyth University)
 
