@@ -6,6 +6,8 @@ Please see MIT LICENCE for further information.
 
 The STL file, is part of the design of Ian Roxborough available on Thingiverse https://www.thingiverse.com/thing:4583051
 
+The whole MaxiMOOP hull family is published on Printables, as print-ready STL files and editable STEP files: [MaxiMOOP Autonomous Sailing Open Water Platform](https://www.printables.com/model/1305302-maximoop-autonomous-sailing-open-water-platform) [4].
+
 ## Hull
 
 ### MaxiMOOP
@@ -105,4 +107,5 @@ Building conventions used in the templates:
 1. P. Miller, M. Hamlet, C. Sauzé, M. Neal, D. Capper, D. Clark, A. Iles, L. Taylor, "MaxiMOOP: A Multi-Role, Low Cost and Small Sailing Robot Platform", in *Robotic Sailing 2014: Proceedings of the 7th International Robotic Sailing Conference* (IRSC 2014), Galway, Ireland, 2014. Local copy: [`papers/irsc2014-maximoop.pdf`](papers/irsc2014-maximoop.pdf). Source: https://www.sailbot.org/wp-content/uploads/2017/06/irsc2014-maximoop.pdf
 2. MaxiMOOP at SailBot: https://www.sailbot.org/maximoop/
 3. I. Roxborough, MaxiMOOP V3 STL, Thingiverse: https://www.thingiverse.com/thing:4583051
-4. Tools used for the measurements and plans: [gmsh](https://gmsh.info), [trimesh](https://trimesh.org), [shapely](https://shapely.readthedocs.io), [rhino3dm](https://github.com/mcneel/rhino3dm), [ezdxf](https://ezdxf.mozman.at).
+4. MaxiMOOP Autonomous Sailing Open Water Platform (MaxiMOOP hull family: print-ready STL files and editable STEP files), Printables: https://www.printables.com/model/1305302-maximoop-autonomous-sailing-open-water-platform
+5. Tools used for the measurements and plans: [gmsh](https://gmsh.info), [trimesh](https://trimesh.org), [shapely](https://shapely.readthedocs.io), [rhino3dm](https://github.com/mcneel/rhino3dm), [ezdxf](https://ezdxf.mozman.at).
