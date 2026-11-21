@@ -85,15 +85,40 @@ The V3 matches the "improved MaxiMOOP" proposed in Section 6 and Fig. 13 of [1]:
 
 ## Plans (MaxiMOOP V3)
 
-All drawings are derived from [`maximoopv3-2.igs`](original-designs/maximoopv3-2.igs) and use the coordinate convention above. Revision: **rev2** (2026-11-21), in which the fin keel is included in every drawing.
+All drawings are derived from [`maximoopv3-2.igs`](original-designs/maximoopv3-2.igs) and use the coordinate convention above. Revision: **rev2** (2026-11-21), in which the fin keel is included in every drawing. Rudder R1 (balanced, transom-hung) added on 2026-11-21.
 
 | File | Content |
 |---|---|
 | [`MaxiMOOP_V3_lines_plan_rev2.pdf`](plans/MaxiMOOP_V3_lines_plan_rev2.pdf) | Sheet 1, A1 at 1:2: profile, plan (half-breadths and waterlines every 25 mm), body plan, buttocks, principal particulars and notes. Sheet 2, A3: table of offsets. |
-| [`MaxiMOOP_V3_bulkheads_1to1_A1_rev2.pdf`](plans/MaxiMOOP_V3_bulkheads_1to1_A1_rev2.pdf) | 10 A1 sheets at 1:1: bulkheads B1–B11, transom, fin keel profile and fin keel horizontal sections. |
-| [`MaxiMOOP_V3_bulkheads_1to1_A4_tiled_rev2.pdf`](plans/MaxiMOOP_V3_bulkheads_1to1_A4_tiled_rev2.pdf) | The same 1:1 templates tiled on A4 (79 pages, 10 mm overlap), for home printers. |
-| [`MaxiMOOP_V3_bulkheads_1to1_rev2.dxf`](plans/MaxiMOOP_V3_bulkheads_1to1_rev2.dxf) | 1:1 templates for laser or CNC cutting. Layers: `HULL_EXTERIOR`, `CUT_PLANKING_3mm`, `CENTERLINE`, `DWL`, `BUILDING_BASE`, `FIN_PROFILE`, `FIN_ROOT`, `FIN_SECTIONS`, `FIN_STATIONS`, `TEXT`. |
+| [`MaxiMOOP_V3_bulkheads_1to1_A1_rev2.pdf`](plans/MaxiMOOP_V3_bulkheads_1to1_A1_rev2.pdf) | 11 A1 sheets at 1:1: bulkheads B1–B11, transom, fin keel profile, fin keel horizontal sections and rudder R1. |
+| [`MaxiMOOP_V3_bulkheads_1to1_A4_tiled_rev2.pdf`](plans/MaxiMOOP_V3_bulkheads_1to1_A4_tiled_rev2.pdf) | The same 1:1 templates tiled on A4 (94 pages, 10 mm overlap), for home printers. |
+| [`MaxiMOOP_V3_bulkheads_1to1_rev2.dxf`](plans/MaxiMOOP_V3_bulkheads_1to1_rev2.dxf) | 1:1 templates for laser or CNC cutting. Layers: `HULL_EXTERIOR`, `CUT_PLANKING_3mm`, `CENTERLINE`, `DWL`, `BUILDING_BASE`, `FIN_PROFILE`, `FIN_ROOT`, `FIN_SECTIONS`, `FIN_STATIONS`, `RUDDER_BLADE`, `RUDDER_AXIS`, `RUDDER_STOCK`, `RUDDER_SECTIONS`, `RUDDER_GUDGEONS`, `TEXT`. |
 | [`MaxiMOOP_V3_lines_1to1_rev2.dxf`](plans/MaxiMOOP_V3_lines_1to1_rev2.dxf) | Lines plan at 1:1: profile, plan, sections, waterlines and buttocks. |
+
+### Rudder R1: balanced, transom-hung (design proposal)
+The project uses a transom-hung rudder, the configuration that "Dewi" used at Aberystwyth University [1]. It replaces the spade rudder in the 2019 3DM model, which has its stock through the hull bottom at u ≈ 1067. The rudder is balanced to reduce steering loads.
+
+| Item | Value |
+|---|---|
+| Hinge axis | Vertical, u = 1205 (13 mm aft of the transom top edge) |
+| Gudgeons | On the transom at z +10 (standoff 28) and z +105 (standoff 16); backing plate inside the transom |
+| Blade | Root z −20, tip z −290 (span 270); chord 140 → 100; area 0.0324 m²; AR 2.25; tip corners R12 |
+| Section | NACA 0012 (16.8 mm thick at the root, 12.0 mm at the tip) |
+| Balance | 28 % of chord forward of the axis |
+| Clearance | Root edge at least 14 mm below the hull at every rudder angle up to ±35° (checked against the hull mesh) |
+| Stock | Ø 10, z −200 → +160; 60 mm tiller arm at z +150 with a pushrod to the deck servo |
+
+Estimated hinge moment at 1.5 m/s (≈ 2.9 kn). Positive values mean the rudder tends to return to centre:
+
+| Balance | 5° | 15° | 30° |
+|---|---|---|---|
+| 0 % | +0.36 N·m | +1.31 N·m | +1.98 N·m |
+| 28 % (R1) | 0.00 N·m | +0.21 N·m | +0.66 N·m |
+| 40 % | −0.16 N·m | −0.25 N·m | +0.09 N·m |
+
+- A balance of 25–30 % cuts the steering load by 75–85 % and keeps the rudder self-centring.
+- At 35 % or more the rudder is overbalanced at small angles: the servo must hold it, and it swings hard over if the servo fails.
+- The estimate uses a simple model: lift slope 2πAR/(AR+2), CL ≤ 1.05, centre of pressure moving from 25 % to 42 % of chord between 0° and 30°. Verify on the water.
 
 Building conventions used in the templates:
 - **Stations:** 0–11, every 100 mm aft of the stem head. Bulkheads B1–B11 sit at u = 100…1100. The transom T is at u = 1176–1190.3.
