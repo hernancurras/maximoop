@@ -22,6 +22,7 @@ You can find a preview of the model [here](original-designs/maximoopv3.STL) or d
 | [`original-designs/`](original-designs/) | Original CAD files of the MaxiMOOP hull, as received (not modified). |
 | [`plans/`](plans/) | Lines plan, table of offsets and 1:1 building templates for MaxiMOOP V3, derived from [`maximoopv3-2.igs`](original-designs/maximoopv3-2.igs). |
 | [`papers/`](papers/) | Reference papers. [`irsc2014-maximoop.pdf`](papers/irsc2014-maximoop.pdf) is the MaxiMOOP paper [1]. |
+| [`diagrams/`](diagrams/) | Electrical diagrams. [`Dewi_wiring_diagram.pdf`](diagrams/Dewi_wiring_diagram.pdf) is the reference wiring of Dewi (Aberystwyth University). |
 
 ## Geometry inventory of `original-designs/`
 
@@ -128,9 +129,70 @@ Building conventions used in the templates:
 - **Fin keel:** B4–B8 include the fin section. The fin root is dashed; cut there to build the fin as a separate piece.
 - **Printing:** print the PDFs at 100 % ("actual size") and check the 100 mm scale bar on every template.
 
+## Electrical reference: Dewi (Aberystwyth University)
+
+[`diagrams/Dewi_wiring_diagram.pdf`](diagrams/Dewi_wiring_diagram.pdf) redraws the first-draft wiring diagram of **Dewi** [6]. Dewi is the MaxiMOOP built by Aberystwyth University students for SailBot 2013, where it came third and completed all events, including the 6-hour long-distance race [1]. It is the reference implementation for the MaxiMOOP V3 electrical design. The diagram dates from 01-Oct-2015 and is by C. Sauzé.
+
+### Battery and power distribution
+| Rail | Source | Feeds | Wiring |
+|---|---|---|---|
+| ~7 V (unregulated) | Battery box: **NiMH, 6 cells, 7.2 V** | Rudder servo and sail winch, **directly** | Red/black |
+| 5 V | **DC-DC converter 5 V** from the battery | Raspberry Pi and WiFi router | Red/black |
+| 5 V | Raspberry Pi USB port | Arduino Nano (control pod) | USB cable |
+| 3.3 V | Raspberry Pi / Nano | GPS (serial), compass (I²C) | Red/black |
+
+- The servos run from the battery voltage (about 7 V), not from a regulated rail. Their current peaks therefore never load the 5 V logic supply.
+- Notes on the original diagram:
+  - (*) USNA's *ABoat Time* used a **12 V 20 Ah LiFePO4** battery with a **20 W solar panel** instead.
+  - (**) The WiFi router was later replaced by the Raspberry Pi's own WiFi.
+- The connector to the WiFi antenna is a waterproof **Bulgin 400** series connector.
+
+### Computing (MCU / CPU)
+| Unit | Role | Links |
+|---|---|---|
+| **Raspberry Pi** (drawn as Raspberry Pi 3B+, ARM 32-bit Linux) | High-level control, logging, telemetry | Ethernet → WiFi router; serial → XBee radio; serial (3.3 V, TX/RX) ← GPS; USB ↔ Arduino Nano |
+| **Arduino Nano (ATmega328), "control pod"** | Timing-critical I/O: servo commands, compass, wind vane | USB ↔ Pi; I²C → compass; wind vane input; 2 servo signals → multiplexer |
+| **Pololu 4-channel RC servo multiplexer (#2806)** | Hardware switch between manual and autonomous control | RC receiver (rudder/sail) and Nano (rudder/sail/GND) in; yellow servo signals out to the rudder and the sail winch |
+
+- The paper describes the same split [1]. The Pi runs Raspbian, takes the high-level decisions, logs, and sends telemetry over WiFi or an XBee Pro. The Arduino reads the PWM wind sensor and the compass and drives the servos.
+- The paper names an Arduino Uno. The diagram and the firmware [7] use an Arduino Nano (ATmega328).
+- The firmware [7] is a serial command server at 115200 baud: single-letter commands with one-line JSON replies (compass, pitch, roll, wind, rudder µs, sail µs).
+- The Pi runs `boatd`, a daemon that exposes the boat through an HTTP/JSON API. The navigation behaviours run as separate processes.
+- **Pi–Nano link over USB.** It also powers the Nano. It avoids connecting 5 V Arduino logic to the Pi's 3.3 V GPIO, so no level shifter is needed.
+- **The RC multiplexer is the safety net.** Manual RC control does not depend on the Pi or the Nano firmware. If software hangs, the operator can still take over the rudder and the sail.
+
+### Sensors and actuators
+| Device | Type | Connected to | Interface / wiring |
+|---|---|---|---|
+| GPS + active antenna **ANT555** | Digital | Raspberry Pi | Serial TX/RX at 3.3 V (green/grey). Antenna on BNC, powered from pin 9 / 3.3 V |
+| Compass **HMC6343** (tilt-compensated) | Digital | Arduino Nano | I²C (blue/yellow), 3.3 V |
+| Wind vane | Analog / PWM | Arduino Nano | 5 V (to be confirmed); read as a PWM pulse width |
+| RC receiver | Digital | Pololu multiplexer | Rudder and sail channels (yellow/yellow) |
+| Rudder servo | Actuator | Pololu multiplexer | Signal (yellow); power ~7 V from the battery |
+| Sail winch | Actuator | Pololu multiplexer | Signal (yellow); power ~7 V from the battery |
+| XBee radio + antenna | RF | Raspberry Pi | Serial |
+| WiFi router + antenna | RF | Raspberry Pi | Ethernet; antenna through a Bulgin 400 connector |
+
+### Wire colour convention used on Dewi
+| Colour | Use |
+|---|---|
+| Red / black | Power and ground |
+| Yellow | Servo signal (rudder, sail) |
+| Green / grey | Serial TX / RX (GPS) |
+| Blue / yellow | I²C (compass) |
+
+### Considerations carried into MaxiMOOP V3
+- Keep a **hardware RC override** (multiplexer) between the receiver, the MCU and the servos.
+- Use **separate power rails**: servos on their own supply, logic on regulated 5 V and 3.3 V.
+- **Link the Pi and the MCUs over USB or through level shifters**, never 5 V into the Pi's GPIO.
+- Use **waterproof connectors** (Bulgin 400 or similar) for every cable that leaves the hull.
+- For long missions, plan the power budget around **LiFePO4 + solar + MPPT**, as on ABoat Time, rather than NiMH.
+
 ## References
 1. P. Miller, M. Hamlet, C. Sauzé, M. Neal, D. Capper, D. Clark, A. Iles, L. Taylor, "MaxiMOOP: A Multi-Role, Low Cost and Small Sailing Robot Platform", in *Robotic Sailing 2014: Proceedings of the 7th International Robotic Sailing Conference* (IRSC 2014), Galway, Ireland, 2014. Local copy: [`papers/irsc2014-maximoop.pdf`](papers/irsc2014-maximoop.pdf). Source: https://www.sailbot.org/wp-content/uploads/2017/06/irsc2014-maximoop.pdf
 2. MaxiMOOP at SailBot: https://www.sailbot.org/maximoop/
 3. I. Roxborough, MaxiMOOP V3 STL, Thingiverse: https://www.thingiverse.com/thing:4583051
 4. MaxiMOOP Autonomous Sailing Open Water Platform (MaxiMOOP hull family: print-ready STL files and editable STEP files), Printables: https://www.printables.com/model/1305302-maximoop-autonomous-sailing-open-water-platform
 5. Tools used for the measurements and plans: [gmsh](https://gmsh.info), [trimesh](https://trimesh.org), [shapely](https://shapely.readthedocs.io), [rhino3dm](https://github.com/mcneel/rhino3dm), [ezdxf](https://ezdxf.mozman.at).
+6. C. Sauzé, Dewi first-draft wiring diagram (01-Oct-2015), abersailbot/dewi-hardware: https://github.com/abersailbot/dewi-hardware/blob/master/firstdraftwiringdiagramdewi.jpg
+7. Aberystwyth University Sailbot, Dewi software (dewi-arduino, boatd, dewi-behaviour): https://github.com/abersailbot
